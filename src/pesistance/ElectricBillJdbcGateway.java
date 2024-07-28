@@ -9,7 +9,12 @@ import java.util.Map;
 
 
 public class ElectricBillJdbcGateway implements ElectricBillGateway {
-    private Connection connection;
+    private static final String URL = "jdbc:mysql://localhost:3306/ElectricBill";
+    private static final String USER = "root";
+    private static final String PASSWORD = "quyen2004";
+
+    // JDBC variables for opening and managing connection
+    private static Connection connection;
   
     public ElectricBillJdbcGateway() throws SQLException, ClassNotFoundException {
         
@@ -92,7 +97,7 @@ public class ElectricBillJdbcGateway implements ElectricBillGateway {
     @Override
     public List<ElectricBill> getAllElectricBills() {
         List<ElectricBill> bills = new ArrayList<>();
-        String query = "SELECT * FROM electricbill";
+        String query = "SELECT * FROM ElectricBill";
         try (Statement stmt = connection.createStatement()) {
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next()) {

@@ -6,6 +6,9 @@ import domain.model.ElectricBill;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -136,14 +139,96 @@ public class ElectricBillView extends JFrame implements Subscriber {
     }
 
     private void buildMenu() {
-        menuBar = new JMenuBar();
-        JMenu fileMenu = new JMenu("File");
-        JMenuItem exitMenuItem = new JMenuItem("Exit");
-        exitMenuItem.addActionListener(e -> System.exit(0));
-        fileMenu.add(exitMenuItem);
-        menuBar.add(fileMenu);
-        setJMenuBar(menuBar);
-        
+       menuBar = new JMenuBar();
+    JMenu menu = new JMenu("Options");
+    
+    JMenuItem addMenuItem = new JMenuItem("Add");
+    JMenuItem editMenuItem = new JMenuItem("Edit");
+    JMenuItem removeMenuItem = new JMenuItem("Remove");
+    JMenuItem issueInvoiceMenuItem = new JMenuItem("Issue Invoice");
+    
+    addMenuItem.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+           
+            ElectricBill electricBill = getDataFromTextField();
+            if (electricBill != null) {
+                electricBillService.add(electricBill);
+                loadElectricBills();
+                clearFields();
+            }
+        }
+    });
+
+    editMenuItem.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            // Code to handle "Edit" action
+            String idClient = JOptionPane.showInputDialog("Enter ID Client to Edit:");
+            List<ElectricBill> bills = electricBillService.findElectricBill(idClient);
+            if (bills != null && !bills.isEmpty()) {
+                ElectricBill bill = bills.get(0);
+                String fullName = JOptionPane.showInputDialog("Enter Full Name:", bill.getFullName());
+                String person = JOptionPane.showInputDialog("Enter Person Type:", bill.getPerson());
+                String monthlyElectricly = JOptionPane.showInputDialog("Enter Monthly Electricly:", bill.getMonthlyElectricly());
+                String timeStr = JOptionPane.showInputDialog("Enter Time (YYYY-MM-DD):", new SimpleDateFormat("yyyy-MM-dd").format(bill.getTime()));
+                int qty = Integer.parseInt(JOptionPane.showInputDialog("Enter Quantity:", bill.getQty()));
+                double unitPrice = Double.parseDouble(JOptionPane.showInputDialog("Enter Unit Price:", bill.getUnitPrice()));
+                double quota = Double.parseDouble(JOptionPane.showInputDialog("Enter Quota:", bill.getQuota()));
+
+                try {
+                    Date time = new SimpleDateFormat("yyyy-MM-dd").parse(timeStr);
+                    bill.setFullName(fullName);
+                    bill.setPerson(person);
+                    bill.setMonthlyElectricly(monthlyElectricly);
+                    bill.setTime(time);
+                    bill.setQty(qty);
+                    bill.setUnitPrice(unitPrice);
+                    bill.setQuota(quota);
+                    electricBillService.update(bill);
+                    loadElectricBills();
+                } catch (ParseException ex) {
+                    ex.printStackTrace();
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Electric Bill not found.");
+            }
+        }
+    });
+
+    removeMenuItem.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            // Code to handle "Remove" action
+            String idClient = JOptionPane.showInputDialog("Enter ID Client to Remove:");
+            electricBillService.deleteBill(idClient);
+            loadElectricBills();
+        }
+    });
+
+    issueInvoiceMenuItem.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            // Code to handle "Issue Invoice" action
+            String idClient = JOptionPane.showInputDialog("Enter ID Client to Issue Invoice:");
+            List<ElectricBill> bills = electricBillService.findElectricBill(idClient);
+            if (bills != null && !bills.isEmpty()) {
+                ElectricBill bill = bills.get(0);
+                // Code to issue invoice (e.g., display or print invoice)
+                JOptionPane.showMessageDialog(null, "Invoice Issued:\n" + bill.toString());
+            } else {
+                JOptionPane.showMessageDialog(null, "Electric Bill not found.");
+            }
+        }
+    });
+
+    menu.add(addMenuItem);
+    menu.add(editMenuItem);
+    menu.add(removeMenuItem);
+    menu.add(issueInvoiceMenuItem);
+    
+    menuBar.add(menu);
+    setJMenuBar(menuBar);
     }
 
      public void update(List<ElectricBill> electricBills) {

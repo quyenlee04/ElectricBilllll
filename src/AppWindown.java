@@ -12,7 +12,7 @@ public class AppWindown {
                 ElectricBillServiceImpl electricBillService = new ElectricBillServiceImpl(electricBillGateway);
                 ElectricBillView electricBillView = new ElectricBillView(electricBillService);
         
-                electricBillService.subscribe(electricBillView); // Subscribe the view to the service
+                electricBillService.subscribe(electricBillView); 
                 electricBillView.setVisible(true);
         }
 }
