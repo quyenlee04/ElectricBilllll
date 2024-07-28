@@ -9,11 +9,7 @@ import java.util.Map;
 
 
 public class ElectricBillJdbcGateway implements ElectricBillGateway {
-    private static final String URL = "jdbc:mysql://localhost:3306/ElectricBill";
-    private static final String USER = "root";
-    private static final String PASSWORD = "quyen2004";
 
-    // JDBC variables for opening and managing connection
     private static Connection connection;
   
     public ElectricBillJdbcGateway() throws SQLException, ClassNotFoundException {
@@ -104,7 +100,7 @@ public class ElectricBillJdbcGateway implements ElectricBillGateway {
                 bills.add(mapResultSetToElectricBill(rs));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            e.printStackTrace();    
         }
         return bills;
     }
@@ -170,3 +166,4 @@ public class ElectricBillJdbcGateway implements ElectricBillGateway {
     }
 
 }
+

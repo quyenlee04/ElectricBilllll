@@ -5,5 +5,5 @@ import java.util.List;
 
 public interface Subscriber {
     void update(List<ElectricBill> electricBills);
-    //void update(List<?> data);
+   
 }

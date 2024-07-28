@@ -18,13 +18,13 @@ public class ElectricBillServiceImpl extends Publisher implements ElectricBillSe
     @Override
     public void add(ElectricBill electricBill) {
         electricBillGateway.addElectricBill(electricBill);
-        //notifyObservers(electricBillGateway.getAllElectricBills());
+       // notifyObservers(electricBillGateway.getAllElectricBills());
     }
 
     @Override
     public void update(ElectricBill electricBill) {
         electricBillGateway.updateElectricBill(electricBill);
-        //notifyObservers(electricBillGateway.getAllElectricBills());
+       // notifyObservers(electricBillGateway.getAllElectricBills());
     }
 
     @Override
@@ -57,11 +57,7 @@ public class ElectricBillServiceImpl extends Publisher implements ElectricBillSe
     public Double calculateAverageAmountForForeignerCustomers() {
         return electricBillGateway.avgTotalForeigner();
     }
-    private void notifySubscribers() {
-        for (Subscriber subscriber : subscribers) {
-            subscriber.update(new ArrayList<>(electricBills));
-        }
-    }
+
 
 
 }

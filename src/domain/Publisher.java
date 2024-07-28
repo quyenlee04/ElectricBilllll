@@ -13,11 +13,6 @@ public class Publisher {
     public void unsubscribe(Subscriber subscriber) {
         subscribers.remove(subscriber);
     }
-/* 
-    public void notifyObservers(List<?> data) {
-        for (Subscriber subscriber : subscribers) {
-            subscriber.update(data);
-        }
-    }
-    */
+
+    
 }
