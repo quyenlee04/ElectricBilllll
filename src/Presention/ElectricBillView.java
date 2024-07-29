@@ -16,9 +16,9 @@ import javax.swing.table.DefaultTableModel;
 
 public class ElectricBillView extends JFrame implements Subscriber {
     private ElectricBillService electricBillService;
-    private JTextField idField, nameField, qtyField, unitPriceField, searchField, nationalField;
+    private JTextField idField, nameField, qtyField, unitPriceField, monthlyElectriclyField, nationalField;
     private JLabel countCustomersVietNam, countCustomersForeigner;
-    private JComboBox<String> comboBoxMonth, comboBoxCustomersType, comboBoxElectricityRates;
+    private JComboBox<String> comboBoxCustomersType, comboBoxElectricityRates;
     private JTable table;
     private DefaultTableModel tableModel;
     private JPanel inputContainerPanel, outputContainerPanel, buttonPanel;
@@ -30,7 +30,7 @@ public class ElectricBillView extends JFrame implements Subscriber {
 
     public ElectricBillView(ElectricBillServiceImpl electricBillService) {
         this.electricBillService = electricBillService;
-        this.electricBillService.subscribe(this); // Subscribe to updates
+        this.electricBillService.subscribe(this);
 
         System.out.println("views");
 
@@ -52,7 +52,7 @@ public class ElectricBillView extends JFrame implements Subscriber {
 
     private void buildPanel() {
         // Input Panel
-        inputContainerPanel = new JPanel(new GridLayout(7, 2));
+        inputContainerPanel = new JPanel(new GridLayout(8, 2));
 
         inputContainerPanel.add(new JLabel("ID:"));
         idField = new JTextField();
@@ -70,10 +70,14 @@ public class ElectricBillView extends JFrame implements Subscriber {
         unitPriceField = new JTextField();
         inputContainerPanel.add(unitPriceField);
 
-        inputContainerPanel.add(new JLabel("Month:"));
-        comboBoxMonth = new JComboBox<>(new String[] { "January", "February", "March", "April", "May", "June", "July",
-                "August", "September", "October", "November", "December" });
-        inputContainerPanel.add(comboBoxMonth);
+        inputContainerPanel.add(new JLabel("MonthlyElectricly:"));
+        monthlyElectriclyField = new JTextField();
+        inputContainerPanel.add(monthlyElectriclyField);
+
+        //inputContainerPanel.add(new JLabel("Date:"));
+       // comboBoxMonth = new JComboBox<>(new String[] { "January", "February", "March", "April", "May", "June", "July",
+        //        "August", "September", "October", "November", "December" });
+       // inputContainerPanel.add(comboBoxMonth);
 
         inputContainerPanel.add(new JLabel("Customer Type:"));
         comboBoxCustomersType = new JComboBox<>(new String[] { "Vietnam", "Foreigner" });
@@ -129,7 +133,7 @@ public class ElectricBillView extends JFrame implements Subscriber {
 
         // Table
         tableModel = new DefaultTableModel(
-                new Object[] { "ID", "Name", "Person", "Month", "Date", "Qty", "Unit Price", "Quota", "Total" }, 0);
+                new Object[] { "ID", "Name", "Person", "MonthlyElectricly", "Date", "Qty", "Unit Price", "Quota", "Total" }, 0);
         table = new JTable(tableModel);
 
         JScrollPane scrollPane = new JScrollPane(table);
@@ -205,7 +209,6 @@ public class ElectricBillView extends JFrame implements Subscriber {
         removeMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Code to handle "Remove" action
                 String idClient = JOptionPane.showInputDialog("Enter ID Client to Remove:");
                 electricBillService.deleteBill(idClient);
                 loadElectricBills();
@@ -215,7 +218,6 @@ public class ElectricBillView extends JFrame implements Subscriber {
         issueInvoiceMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Code to handle "Issue Invoice" action
                 String idClient = JOptionPane.showInputDialog("Enter ID Client to Issue Invoice:");
                 List<ElectricBill> bills = electricBillService.findElectricBill(idClient);
                 if (bills != null && !bills.isEmpty()) {
@@ -248,15 +250,7 @@ public class ElectricBillView extends JFrame implements Subscriber {
         updateTable(electricBills);
     }
 
-    /*
-     * private void updateCustomerCounts() {
-     * int vietnamCount = electricBillService.countVietnamCustomers();
-     * int foreignerCount = electricBillService.countForeignerCustomers();
-     * 
-     * countCustomersVietNam.setText("Vietnam Customers: " + vietnamCount);
-     * countCustomersForeigner.setText("Foreigner Customers: " + foreignerCount);
-     * }
-     */
+
     private void reset() {
         // Logic to reset view
     }
@@ -269,40 +263,53 @@ public class ElectricBillView extends JFrame implements Subscriber {
         nationalField.setText("");
     }
 
-    private double extractQuota(String rateString) {
-        // Logic to extract quota from rateString
-        return 0.0;
-    }
+    
+        private double extractQuota(String rateString) {
+            if (rateString.equals("Rate1")) {
+                return 1;
+    
+            } else if (rateString.equals("Rate2")) {
+                return 2;
+    
+            } else if (rateString.equals("Rate3")) {
+                return 3;
+    
+            } else {
+                return 0;
+            }
+            
+        }
+    
 
-    public ElectricBill getDataFromTextField() {
-        String id = idField.getText();
-        String name = nameField.getText();
-        Integer qty = null;
-        Double unitPrice = null;
-        Double quota = extractQuota(comboBoxElectricityRates.getSelectedItem().toString());
-        String customertype = (String) comboBoxCustomersType.getSelectedItem();
-        String rate = (String) comboBoxElectricityRates.getSelectedItem();
-        try {
-            qty = Integer.parseInt(qtyField.getText());
-            unitPrice = Double.parseDouble(unitPriceField.getText());
-            quota = extractQuota(comboBoxElectricityRates.getSelectedItem().toString());
-        } catch (NumberFormatException e) {
-            // Handle exception: show error message to user, return null or a default
-            // ElectricBill, etc.
-            JOptionPane.showMessageDialog(this, "Please enter valid numbers for quantity and unit price.",
-                    "Invalid Input", JOptionPane.ERROR_MESSAGE);
-            return null;
+        public ElectricBill getDataFromTextField() {
+            String id = idField.getText();
+            String name = nameField.getText();
+            Integer qty = null;
+            Double unitPrice = null;
+            Double quota = extractQuota(comboBoxElectricityRates.getSelectedItem().toString());
+            String customertype = (String) comboBoxCustomersType.getSelectedItem();
+            String monthly = monthlyElectriclyField.getText();
+            try {
+                qty = Integer.parseInt(qtyField.getText());
+                unitPrice = Double.parseDouble(unitPriceField.getText());
+                quota = extractQuota(comboBoxElectricityRates.getSelectedItem().toString());
+            } catch (NumberFormatException e) {
+                // Handle exception: show error message to user, return null or a default
+                // ElectricBill, etc.
+                JOptionPane.showMessageDialog(this, "Please enter valid numbers for quantity and unit price.",
+                        "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                return null;
+            }
+    
+            return new ElectricBill(id, name, customertype, monthly, null, qty, unitPrice, quota);
         }
 
-        return new ElectricBill(id, name, customertype, rate, null, qty, unitPrice, quota);
-    }
-
     void showVietnamFields() {
-        // Logic to show Vietnam-specific fields
+        
     }
 
     void showForeignerFields() {
-        // Logic to show Foreigner-specific fields
+       
     }
 
     public void addAddButtonListener(ActionListener listener) {

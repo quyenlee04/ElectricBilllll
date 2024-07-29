@@ -18,19 +18,19 @@ public class ElectricBillServiceImpl extends Publisher implements ElectricBillSe
     @Override
     public void add(ElectricBill electricBill) {
         electricBillGateway.addElectricBill(electricBill);
-        // notifyObservers(electricBillGateway.getAllElectricBills());
+        
     }
 
     @Override
     public void update(ElectricBill electricBill) {
         electricBillGateway.updateElectricBill(electricBill);
-        // notifyObservers(electricBillGateway.getAllElectricBills());
+        
     }
 
     @Override
     public void deleteBill(String idClient) {
         electricBillGateway.deleteElectricBill(idClient);
-        // notifyObservers(electricBillGateway.getAllElectricBills());
+        
     }
 
     @Override
@@ -40,7 +40,7 @@ public class ElectricBillServiceImpl extends Publisher implements ElectricBillSe
 
     @Override
     public List<ElectricBill> getAllElectricBills() {
-        // return new ArrayList<>(electricBills);
+        
         return electricBillGateway.getAllElectricBills();
     }
 

@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.JOptionPane;
-
 public class ElectricBillJdbcGateway implements ElectricBillGateway {
 
     private static Connection connection;
@@ -17,7 +15,7 @@ public class ElectricBillJdbcGateway implements ElectricBillGateway {
 
         String url = "jdbc:mysql://localhost:3306/electricbill";
         String user = "root";
-        String password = ".";
+        String password = "quyen2004";
         Class.forName("com.mysql.cj.jdbc.Driver");
 
         connection = DriverManager.getConnection(url, user, password);
@@ -161,25 +159,9 @@ public class ElectricBillJdbcGateway implements ElectricBillGateway {
                 rs.getInt("qty"),
                 rs.getDouble("unitPrice"),
                 rs.getDouble("quota")
-        // rs.getDouble("total")
+         
         );
     }
 
-    public static void main(String[] args) throws ClassNotFoundException, SQLException {
-        new ElectricBillJdbcGateway();
-        ElectricBillGateway electricBillGateway = new ElectricBillJdbcGateway();
-        // ElectricBillServiceImpl electricBillService = new
-        // ElectricBillServiceImpl(electricBillGateway);
-        // ElectricBillView electricBillView = new
-        // ElectricBillView(electricBillService);
-
-        List<ElectricBill> data = electricBillGateway.getAllElectricBills();
-
-        System.out.println(data.size());
-
-        for (ElectricBill electricBill : data) {
-            System.err.println(electricBill.getQty());
-        }
-    }
-
+   
 }

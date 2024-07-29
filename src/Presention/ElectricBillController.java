@@ -3,10 +3,8 @@ package Presention;
 import Presention.command_.AddCommand;
 import Presention.command_.Command;
 import Presention.command_.DeleteCommand;
-import Presention.command_.FindCommand;
 import domain.ElectricBillService;
 import domain.model.ElectricBill;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -15,7 +13,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -116,8 +113,7 @@ public class ElectricBillController implements ActionListener, ItemListener, Lis
             List<ElectricBill> bills = electricBillService.findElectricBill(idClient);
             if (bills != null && !bills.isEmpty()) {
                 ElectricBill bill = bills.get(0);
-                // Code to issue invoice (e.g., display or print invoice)
-                // Format the invoice details
+                
                 String invoiceDetails = String.format(
                         "Invoice Details:\n" +
                                 "-----------------------------\n" +
@@ -128,14 +124,14 @@ public class ElectricBillController implements ActionListener, ItemListener, Lis
                                 "-----------------------------\n" +
                                 "Thank you for your business!");
 
-                // Display the formatted invoice details
+              
                 JOptionPane.showMessageDialog(null, invoiceDetails);
             } else {
                 JOptionPane.showMessageDialog(null, "Electric Bill not found.");
             }
 
         } else if (source == electricBillView.getExitButton()) {
-            // Implement exit logic
+            
         } else if (source == electricBillView.getVietnamTypeButton()) {
             electricBillView.showVietnamFields();
         } else if (source == electricBillView.getForeignerTypeButton()) {
@@ -146,12 +142,12 @@ public class ElectricBillController implements ActionListener, ItemListener, Lis
 
     @Override
     public void itemStateChanged(ItemEvent e) {
-        // Implement the logic for item state changes
+        
     }
 
     @Override
     public void valueChanged(ListSelectionEvent e) {
-        // Implement the logic for list selection changes
+        
     }
 
     private void execute(Command command) {

@@ -25,21 +25,7 @@ public class ElectricBill {
         this.quota = quota;
     }
 
-    // Getters and Setters
-
-    // public ElectricBill(String idClient, String fullName, String person, String string4, java.sql.Date time, int qty,
-    //         double unitPrice, double quota, double total) {
-    //     this.idClient = idClient;
-    //     this.fullName = fullName;
-    //     this.person = person;
-    //     this.monthlyElectricly = idClient;
-    //     this.time = time;
-    //     this.qty = qty;
-    //     this.unitPrice = unitPrice;
-    //     this.quota = quota;
-    //     this.total = total;
-
-    // }
+   
 
     public String getIdClient() {
         return idClient;
