@@ -11,8 +11,10 @@ public class ElectricBill {
     private Integer qty;
     private Double unitPrice;
     private Double quota;
+    private Double total;
 
-    public ElectricBill(String idClient, String fullName, String person, String monthlyElectricly, Date time, Integer qty, Double unitPrice, Double quota) {
+    public ElectricBill(String idClient, String fullName, String person, String monthlyElectricly, Date time,
+            Integer qty, Double unitPrice, Double quota) {
         this.idClient = idClient;
         this.fullName = fullName;
         this.person = person;
@@ -25,10 +27,19 @@ public class ElectricBill {
 
     // Getters and Setters
 
-    public ElectricBill(String string, String string2, String string3, String string4, java.sql.Date date, int int1,
-            double double1, double double2, double double3) {
-        
-    }
+    // public ElectricBill(String idClient, String fullName, String person, String string4, java.sql.Date time, int qty,
+    //         double unitPrice, double quota, double total) {
+    //     this.idClient = idClient;
+    //     this.fullName = fullName;
+    //     this.person = person;
+    //     this.monthlyElectricly = idClient;
+    //     this.time = time;
+    //     this.qty = qty;
+    //     this.unitPrice = unitPrice;
+    //     this.quota = quota;
+    //     this.total = total;
+
+    // }
 
     public String getIdClient() {
         return idClient;
@@ -94,6 +105,10 @@ public class ElectricBill {
         this.quota = quota;
     }
 
+    public void setTotal(Double total) {
+        this.total = total;
+    }
+
     public Double getTotal() {
         if (qty <= quota) {
             return qty * unitPrice;
@@ -101,4 +116,5 @@ public class ElectricBill {
             return quota * unitPrice + (qty - quota) * unitPrice * 2.5;
         }
     }
+
 }

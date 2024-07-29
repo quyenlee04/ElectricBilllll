@@ -1,6 +1,7 @@
 package Presention;
 
 import domain.ElectricBillService;
+import domain.ElectricBillServiceImpl;
 import domain.Subscriber;
 import domain.model.ElectricBill;
 import java.awt.*;
@@ -27,9 +28,11 @@ public class ElectricBillView extends JFrame implements Subscriber {
     private JMenuBar menuBar;
     private ElectricBillController electricBillController;
 
-    public ElectricBillView(ElectricBillService electricBillService) {
+    public ElectricBillView(ElectricBillServiceImpl electricBillService) {
         this.electricBillService = electricBillService;
         this.electricBillService.subscribe(this); // Subscribe to updates
+
+        System.out.println("views");
 
         initialize();
         loadElectricBills();
@@ -44,7 +47,7 @@ public class ElectricBillView extends JFrame implements Subscriber {
         buildPanel();
 
         loadElectricBills();
-       // updateCustomerCounts();
+        // updateCustomerCounts();
     }
 
     private void buildPanel() {
@@ -68,15 +71,16 @@ public class ElectricBillView extends JFrame implements Subscriber {
         inputContainerPanel.add(unitPriceField);
 
         inputContainerPanel.add(new JLabel("Month:"));
-        comboBoxMonth = new JComboBox<>(new String[]{"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"});
+        comboBoxMonth = new JComboBox<>(new String[] { "January", "February", "March", "April", "May", "June", "July",
+                "August", "September", "October", "November", "December" });
         inputContainerPanel.add(comboBoxMonth);
 
         inputContainerPanel.add(new JLabel("Customer Type:"));
-        comboBoxCustomersType = new JComboBox<>(new String[]{"Vietnam", "Foreigner"});
+        comboBoxCustomersType = new JComboBox<>(new String[] { "Vietnam", "Foreigner" });
         inputContainerPanel.add(comboBoxCustomersType);
 
         inputContainerPanel.add(new JLabel("Electricity Rates:"));
-        comboBoxElectricityRates = new JComboBox<>(new String[]{"Rate1", "Rate2", "Rate3"});
+        comboBoxElectricityRates = new JComboBox<>(new String[] { "Rate1", "Rate2", "Rate3" });
         inputContainerPanel.add(comboBoxElectricityRates);
 
         // Output Panel
@@ -96,11 +100,9 @@ public class ElectricBillView extends JFrame implements Subscriber {
 
         removeButton = new JButton("Remove");
         buttonPanel.add(removeButton);
-        
 
         editButton = new JButton("Edit");
         buttonPanel.add(editButton);
-        
 
         searchBillButton = new JButton("Search");
         buttonPanel.add(searchBillButton);
@@ -126,7 +128,8 @@ public class ElectricBillView extends JFrame implements Subscriber {
         buttonPanel.add(foreignerTypeButton);
 
         // Table
-        tableModel = new DefaultTableModel(new Object[]{"ID", "Name", "Person", "Month", "Date", "Qty", "Unit Price", "Quota", "Total"}, 0);
+        tableModel = new DefaultTableModel(
+                new Object[] { "ID", "Name", "Person", "Month", "Date", "Qty", "Unit Price", "Quota", "Total" }, 0);
         table = new JTable(tableModel);
 
         JScrollPane scrollPane = new JScrollPane(table);
@@ -139,116 +142,121 @@ public class ElectricBillView extends JFrame implements Subscriber {
     }
 
     private void buildMenu() {
-       menuBar = new JMenuBar();
-    JMenu menu = new JMenu("Options");
-    
-    JMenuItem addMenuItem = new JMenuItem("Add");
-    JMenuItem editMenuItem = new JMenuItem("Edit");
-    JMenuItem removeMenuItem = new JMenuItem("Remove");
-    JMenuItem issueInvoiceMenuItem = new JMenuItem("Issue Invoice");
-    
-    addMenuItem.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-           
-            ElectricBill electricBill = getDataFromTextField();
-            if (electricBill != null) {
-                electricBillService.add(electricBill);
-                loadElectricBills();
-                clearFields();
-            }
-        }
-    });
+        menuBar = new JMenuBar();
+        JMenu menu = new JMenu("Options");
 
-    editMenuItem.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            // Code to handle "Edit" action
-            String idClient = JOptionPane.showInputDialog("Enter ID Client to Edit:");
-            List<ElectricBill> bills = electricBillService.findElectricBill(idClient);
-            if (bills != null && !bills.isEmpty()) {
-                ElectricBill bill = bills.get(0);
-                String fullName = JOptionPane.showInputDialog("Enter Full Name:", bill.getFullName());
-                String person = JOptionPane.showInputDialog("Enter Person Type:", bill.getPerson());
-                String monthlyElectricly = JOptionPane.showInputDialog("Enter Monthly Electricly:", bill.getMonthlyElectricly());
-                String timeStr = JOptionPane.showInputDialog("Enter Time (YYYY-MM-DD):", new SimpleDateFormat("yyyy-MM-dd").format(bill.getTime()));
-                int qty = Integer.parseInt(JOptionPane.showInputDialog("Enter Quantity:", bill.getQty()));
-                double unitPrice = Double.parseDouble(JOptionPane.showInputDialog("Enter Unit Price:", bill.getUnitPrice()));
-                double quota = Double.parseDouble(JOptionPane.showInputDialog("Enter Quota:", bill.getQuota()));
+        JMenuItem addMenuItem = new JMenuItem("Add");
+        JMenuItem editMenuItem = new JMenuItem("Edit");
+        JMenuItem removeMenuItem = new JMenuItem("Remove");
+        JMenuItem issueInvoiceMenuItem = new JMenuItem("Issue Invoice");
 
-                try {
-                    Date time = new SimpleDateFormat("yyyy-MM-dd").parse(timeStr);
-                    bill.setFullName(fullName);
-                    bill.setPerson(person);
-                    bill.setMonthlyElectricly(monthlyElectricly);
-                    bill.setTime(time);
-                    bill.setQty(qty);
-                    bill.setUnitPrice(unitPrice);
-                    bill.setQuota(quota);
-                    electricBillService.update(bill);
+        addMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("check addd");
+                ElectricBill electricBill = getDataFromTextField();
+                if (electricBill != null) {
+                    electricBillService.add(electricBill);
                     loadElectricBills();
-                } catch (ParseException ex) {
-                    ex.printStackTrace();
+                    clearFields();
                 }
-            } else {
-                JOptionPane.showMessageDialog(null, "Electric Bill not found.");
             }
-        }
-    });
+        });
 
-    removeMenuItem.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            // Code to handle "Remove" action
-            String idClient = JOptionPane.showInputDialog("Enter ID Client to Remove:");
-            electricBillService.deleteBill(idClient);
-            loadElectricBills();
-        }
-    });
+        editMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Code to handle "Edit" action
+                String idClient = JOptionPane.showInputDialog("Enter ID Client to Edit:");
+                List<ElectricBill> bills = electricBillService.findElectricBill(idClient);
+                if (bills != null && !bills.isEmpty()) {
+                    ElectricBill bill = bills.get(0);
+                    String fullName = JOptionPane.showInputDialog("Enter Full Name:", bill.getFullName());
+                    String person = JOptionPane.showInputDialog("Enter Person Type:", bill.getPerson());
+                    String monthlyElectricly = JOptionPane.showInputDialog("Enter Monthly Electricly:",
+                            bill.getMonthlyElectricly());
+                    String timeStr = JOptionPane.showInputDialog("Enter Time (YYYY-MM-DD):",
+                            new SimpleDateFormat("yyyy-MM-dd").format(bill.getTime()));
+                    int qty = Integer.parseInt(JOptionPane.showInputDialog("Enter Quantity:", bill.getQty()));
+                    double unitPrice = Double
+                            .parseDouble(JOptionPane.showInputDialog("Enter Unit Price:", bill.getUnitPrice()));
+                    double quota = Double.parseDouble(JOptionPane.showInputDialog("Enter Quota:", bill.getQuota()));
 
-    issueInvoiceMenuItem.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            // Code to handle "Issue Invoice" action
-            String idClient = JOptionPane.showInputDialog("Enter ID Client to Issue Invoice:");
-            List<ElectricBill> bills = electricBillService.findElectricBill(idClient);
-            if (bills != null && !bills.isEmpty()) {
-                ElectricBill bill = bills.get(0);
-                // Code to issue invoice (e.g., display or print invoice)
-                JOptionPane.showMessageDialog(null, "Invoice Issued:\n" + bill.toString());
-            } else {
-                JOptionPane.showMessageDialog(null, "Electric Bill not found.");
+                    try {
+                        Date time = new SimpleDateFormat("yyyy-MM-dd").parse(timeStr);
+                        bill.setFullName(fullName);
+                        bill.setPerson(person);
+                        bill.setMonthlyElectricly(monthlyElectricly);
+                        bill.setTime(time);
+                        bill.setQty(qty);
+                        bill.setUnitPrice(unitPrice);
+                        bill.setQuota(quota);
+                        electricBillService.update(bill);
+                        loadElectricBills();
+                    } catch (ParseException ex) {
+                        ex.printStackTrace();
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Electric Bill not found.");
+                }
             }
-        }
-    });
+        });
 
-    menu.add(addMenuItem);
-    menu.add(editMenuItem);
-    menu.add(removeMenuItem);
-    menu.add(issueInvoiceMenuItem);
-    
-    menuBar.add(menu);
-    setJMenuBar(menuBar);
+        removeMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Code to handle "Remove" action
+                String idClient = JOptionPane.showInputDialog("Enter ID Client to Remove:");
+                electricBillService.deleteBill(idClient);
+                loadElectricBills();
+            }
+        });
+
+        issueInvoiceMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Code to handle "Issue Invoice" action
+                String idClient = JOptionPane.showInputDialog("Enter ID Client to Issue Invoice:");
+                List<ElectricBill> bills = electricBillService.findElectricBill(idClient);
+                if (bills != null && !bills.isEmpty()) {
+                    ElectricBill bill = bills.get(0);
+                    // Code to issue invoice (e.g., display or print invoice)
+                    JOptionPane.showMessageDialog(null, "Invoice Issued:\n" + bill.toString());
+                } else {
+                    JOptionPane.showMessageDialog(null, "Electric Bill not found.");
+                }
+            }
+        });
+
+        menu.add(addMenuItem);
+        menu.add(editMenuItem);
+        menu.add(removeMenuItem);
+        menu.add(issueInvoiceMenuItem);
+
+        menuBar.add(menu);
+        setJMenuBar(menuBar);
     }
 
-     public void update(List<ElectricBill> electricBills) {
+    public void update(List<ElectricBill> electricBills) {
         updateTable(electricBills);
-        //updateCustomerCounts();
+        // updateCustomerCounts();
     }
 
-    private void loadElectricBills() {
+    public void loadElectricBills() {
         List<ElectricBill> electricBills = electricBillService.getAllElectricBills();
+
         updateTable(electricBills);
     }
 
-   /*  private void updateCustomerCounts() {
-        int vietnamCount = electricBillService.countVietnamCustomers();
-        int foreignerCount = electricBillService.countForeignerCustomers();
-
-        countCustomersVietNam.setText("Vietnam Customers: " + vietnamCount);
-        countCustomersForeigner.setText("Foreigner Customers: " + foreignerCount);
-    }
-*/
+    /*
+     * private void updateCustomerCounts() {
+     * int vietnamCount = electricBillService.countVietnamCustomers();
+     * int foreignerCount = electricBillService.countForeignerCustomers();
+     * 
+     * countCustomersVietNam.setText("Vietnam Customers: " + vietnamCount);
+     * countCustomersForeigner.setText("Foreigner Customers: " + foreignerCount);
+     * }
+     */
     private void reset() {
         // Logic to reset view
     }
@@ -267,24 +275,27 @@ public class ElectricBillView extends JFrame implements Subscriber {
     }
 
     public ElectricBill getDataFromTextField() {
-    String id = idField.getText();
-    String name = nameField.getText();
-    Integer qty = null;
-    Double unitPrice = null;
-    Double quota = extractQuota(comboBoxElectricityRates.getSelectedItem().toString());
-
-    try {
-        qty = Integer.parseInt(qtyField.getText());
-        unitPrice = Double.parseDouble(unitPriceField.getText());
-        quota = extractQuota(comboBoxElectricityRates.getSelectedItem().toString());
-    } catch (NumberFormatException e) {
-        // Handle exception: show error message to user, return null or a default ElectricBill, etc.
-        JOptionPane.showMessageDialog(this, "Please enter valid numbers for quantity and unit price.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
-        return null;
-    }
-
-    return new ElectricBill(id, name, "", "", null, qty, unitPrice, quota);
+        String id = idField.getText();
+        String name = nameField.getText();
+        Integer qty = null;
+        Double unitPrice = null;
+        Double quota = extractQuota(comboBoxElectricityRates.getSelectedItem().toString());
+        String customertype = (String) comboBoxCustomersType.getSelectedItem();
+        String rate = (String) comboBoxElectricityRates.getSelectedItem();
+        try {
+            qty = Integer.parseInt(qtyField.getText());
+            unitPrice = Double.parseDouble(unitPriceField.getText());
+            quota = extractQuota(comboBoxElectricityRates.getSelectedItem().toString());
+        } catch (NumberFormatException e) {
+            // Handle exception: show error message to user, return null or a default
+            // ElectricBill, etc.
+            JOptionPane.showMessageDialog(this, "Please enter valid numbers for quantity and unit price.",
+                    "Invalid Input", JOptionPane.ERROR_MESSAGE);
+            return null;
         }
+
+        return new ElectricBill(id, name, customertype, rate, null, qty, unitPrice, quota);
+    }
 
     void showVietnamFields() {
         // Logic to show Vietnam-specific fields
@@ -296,6 +307,7 @@ public class ElectricBillView extends JFrame implements Subscriber {
 
     public void addAddButtonListener(ActionListener listener) {
         addButton.addActionListener(listener);
+
     }
 
     public void addRemoveButtonListener(ActionListener listener) {
@@ -370,10 +382,14 @@ public class ElectricBillView extends JFrame implements Subscriber {
         System.exit(0);
     }
 
-    private void updateTable(List<ElectricBill> electricBills) {
+    public void updateTable(List<ElectricBill> electricBills) {
         tableModel.setRowCount(0);
         for (ElectricBill electricBill : electricBills) {
-            tableModel.addRow(new Object[]{electricBill.getIdClient(), electricBill.getFullName(), electricBill.getPerson(), electricBill.getMonthlyElectricly(), electricBill.getTime(), electricBill.getQty(), electricBill.getUnitPrice(), electricBill.getQuota(), electricBill.getTotal()});
+            tableModel.addRow(
+                    new Object[] { electricBill.getIdClient(), electricBill.getFullName(), electricBill.getPerson(),
+                            electricBill.getMonthlyElectricly(), electricBill.getTime(), electricBill.getQty(),
+                            electricBill.getUnitPrice(), electricBill.getQuota(), electricBill.getTotal() });
         }
+
     }
 }

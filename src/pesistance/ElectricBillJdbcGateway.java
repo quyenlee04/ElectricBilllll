@@ -7,22 +7,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JOptionPane;
 
 public class ElectricBillJdbcGateway implements ElectricBillGateway {
 
     private static Connection connection;
-  
+
     public ElectricBillJdbcGateway() throws SQLException, ClassNotFoundException {
-        
-    
+
         String url = "jdbc:mysql://localhost:3306/electricbill";
         String user = "root";
-        String password = "quyen2004";
+        String password = ".";
         Class.forName("com.mysql.cj.jdbc.Driver");
-        
+
         connection = DriverManager.getConnection(url, user, password);
 
-        
     }
 
     @Override
@@ -33,7 +32,7 @@ public class ElectricBillJdbcGateway implements ElectricBillGateway {
             stmt.setString(2, electricBill.getFullName());
             stmt.setString(3, electricBill.getPerson());
             stmt.setString(4, electricBill.getMonthlyElectricly());
-            stmt.setDate(5, new java.sql.Date(electricBill.getTime().getTime()));
+            stmt.setDate(5, new java.sql.Date(System.currentTimeMillis()));
             stmt.setInt(6, electricBill.getQty());
             stmt.setDouble(7, electricBill.getUnitPrice());
             stmt.setDouble(8, electricBill.getQuota());
@@ -63,7 +62,7 @@ public class ElectricBillJdbcGateway implements ElectricBillGateway {
         }
     }
 
-     @Override
+    @Override
     public void deleteElectricBill(String idClient) {
         String query = "DELETE FROM ElectricBill WHERE idClient=?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
@@ -91,16 +90,17 @@ public class ElectricBillJdbcGateway implements ElectricBillGateway {
     }
 
     @Override
-    public List<ElectricBill> getAllElectricBills() {
-        List<ElectricBill> bills = new ArrayList<>();
+    public ArrayList<ElectricBill> getAllElectricBills() {
+        ArrayList<ElectricBill> bills = new ArrayList<>();
         String query = "SELECT * FROM ElectricBill";
         try (Statement stmt = connection.createStatement()) {
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next()) {
                 bills.add(mapResultSetToElectricBill(rs));
             }
+
         } catch (SQLException e) {
-            e.printStackTrace();    
+            e.printStackTrace();
         }
         return bills;
     }
@@ -160,10 +160,26 @@ public class ElectricBillJdbcGateway implements ElectricBillGateway {
                 rs.getDate("time"),
                 rs.getInt("qty"),
                 rs.getDouble("unitPrice"),
-                rs.getDouble("quota"),
-                rs.getDouble("total")
+                rs.getDouble("quota")
+        // rs.getDouble("total")
         );
     }
 
-}
+    public static void main(String[] args) throws ClassNotFoundException, SQLException {
+        new ElectricBillJdbcGateway();
+        ElectricBillGateway electricBillGateway = new ElectricBillJdbcGateway();
+        // ElectricBillServiceImpl electricBillService = new
+        // ElectricBillServiceImpl(electricBillGateway);
+        // ElectricBillView electricBillView = new
+        // ElectricBillView(electricBillService);
 
+        List<ElectricBill> data = electricBillGateway.getAllElectricBills();
+
+        System.out.println(data.size());
+
+        for (ElectricBill electricBill : data) {
+            System.err.println(electricBill.getQty());
+        }
+    }
+
+}

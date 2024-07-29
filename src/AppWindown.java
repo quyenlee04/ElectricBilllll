@@ -1,19 +1,24 @@
+import Presention.ElectricBillController;
 import Presention.ElectricBillView;
 import domain.ElectricBillServiceImpl;
+import domain.model.ElectricBill;
+
 import java.sql.SQLException;
-import pesistance.ElectricBillGateway;
+
 import pesistance.ElectricBillJdbcGateway;
 
 public class AppWindown {
-    
+
         public static void main(String[] args) throws ClassNotFoundException, SQLException {
 
-                ElectricBillGateway electricBillGateway = new ElectricBillJdbcGateway();
+                ElectricBillJdbcGateway electricBillGateway = new ElectricBillJdbcGateway();
                 ElectricBillServiceImpl electricBillService = new ElectricBillServiceImpl(electricBillGateway);
                 ElectricBillView electricBillView = new ElectricBillView(electricBillService);
-        
-                electricBillService.subscribe(electricBillView); 
+                ElectricBillController electricBillController = new ElectricBillController(electricBillView,
+                                electricBillService);
+
+                electricBillService.subscribe(electricBillView);
+
                 electricBillView.setVisible(true);
         }
 }
-    

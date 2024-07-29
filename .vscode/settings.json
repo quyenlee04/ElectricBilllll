@@ -3,7 +3,8 @@
     "java.project.outputPath": "bin",
     "java.project.referencedLibraries": [
         "lib/**/*.jar",
-        "d:\\mysql-connector-j-8.0.33.jar"
+        "d:\\mysql-connector-j-8.0.33.jar",
+        "c:\\Users\\khanh\\.m2\\repository\\mysql\\mysql-connector-java\\8.0.28\\mysql-connector-java-8.0.28.jar"
     ],
     "cSpell.words": [
         "Jdbc"
